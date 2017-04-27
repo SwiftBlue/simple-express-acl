@@ -46,14 +46,16 @@ var ACL = function () {
         this.responseStatus = opts.responseStatus || 401;
         this.response = opts.response || { status: 'error', message: 'Unauthorized access or insufficient permissions' };
 
-        this.setRules(this.rulesFile);
-
         return acl;
     }
 
     _createClass(ACL, [{
         key: 'check',
         value: function check(req, res, next) {
+            if (Object.keys(acl.rules).length == 0) {
+                acl.setRules(acl.rulesFile);
+            }
+
             var rules = acl.rules;
 
             if (req && req.user && req.user.roles) {
@@ -171,8 +173,8 @@ var ACL = function () {
         value: function setRules() {
             var rules = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-            console.log('cwd:', this.cwd);
             if (_lodash2.default.isString(rules)) {
+                this.rulesFile = rules;
                 rules = this.loadRulesFile(rules);
             }
             this.rules = rules;
