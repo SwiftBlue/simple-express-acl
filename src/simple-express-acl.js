@@ -17,12 +17,14 @@ class ACL {
         this.responseStatus = opts.responseStatus || 401
         this.response       = opts.response || {status: 'error', message: `Unauthorized access or insufficient permissions`}
 
-        this.setRules(this.rulesFile)
-
         return acl
     }
 
     check(req, res, next) {
+        if (Object.keys(acl.rules).length == 0) {
+            acl.setRules(acl.rulesFile)
+        }
+
         const rules = acl.rules
 
         if (req && req.user && req.user.roles) {
@@ -116,8 +118,10 @@ class ACL {
     }
 
     setRules(rules={}) {
-        console.log( 'cwd:', this.cwd )
-        if(_.isString(rules)) { rules = this.loadRulesFile(rules) }
+        if(_.isString(rules)) {
+            this.rulesFile = rules
+            rules = this.loadRulesFile(rules)
+        }
         this.rules = rules
     }
 
