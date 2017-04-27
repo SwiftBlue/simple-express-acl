@@ -1,0 +1,43 @@
+{
+  "name": "simple-express-acl",
+  "version": "0.2.0",
+  "description": "Dead simple Express ACL middleware that also works well with JSON Web Token's (JWT) and Passport's JWT strategy",
+  "main": "dist/simple-express-acl.js",
+  "author": "SwiftBlue <hello@swiftblue.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/swiftblue/simple-express-acl#readme",
+  "scripts": {
+    "transpile": "babel --presets es2015 src --out-dir dist",
+    "clean": "rm -rf dist/",
+    "build": "npm run clean && npm run transpile"
+  },
+  "bugs": {
+    "url": "https://github.com/swiftblue/simple-express-acl/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/swiftblue/simple-express-acl.git"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.23.0",
+    "babel-preset-es2015": "^6.22.0"
+  },
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "js-yaml": "^3.8.3",
+    "lodash": "^4.17.4",
+    "path": "^0.12.7"
+  },
+  "keywords": [
+    "simple",
+    "express",
+    "acl",
+    "jwt",
+    "tokens",
+    "passport",
+    "passport-jwt",
+    "permissions",
+    "access",
+    "control"
+  ]
+}
