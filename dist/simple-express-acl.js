@@ -41,6 +41,7 @@ var ACL = function () {
         this.opts = opts;
         this.cwd = process.cwd();
         this.rules = {};
+        this.prefix = false;
         this.superRole = opts.superRole || 'admin';
         this.rulesFile = opts.rulesFile || _path2.default.join(this.cwd, 'acl.yml');
         this.responseStatus = opts.responseStatus || 401;
@@ -50,6 +51,11 @@ var ACL = function () {
     }
 
     _createClass(ACL, [{
+        key: 'setPrefix',
+        value: function setPrefix(prefix) {
+            acl.prefix = prefix;
+        }
+    }, {
         key: 'check',
         value: function check(req, res, next) {
             if (Object.keys(acl.rules).length == 0) {
@@ -95,11 +101,23 @@ var ACL = function () {
     }, {
         key: 'makeUserRequest',
         value: function makeUserRequest(req) {
+
+            if (acl.prefix) {}
             return {
                 roles: req.user.roles,
                 method: _lodash2.default.toLower(req.method) || 'get',
-                resource: _lodash2.default.toLower(_lodash2.default.trim(req.baseUrl, '/')) || '/'
+                resource: acl.makeResource(req)
             };
+        }
+    }, {
+        key: 'makeResource',
+        value: function makeResource(req) {
+            if (!acl.prefix) {
+                return _lodash2.default.toLower(_lodash2.default.trim(req.baseUrl, '/')) || '/';
+            } else {
+                var _baseUrl = _lodash2.default.toLower(_lodash2.default.trim(req.baseUrl, '/')) || '/';
+                return _lodash2.default.trimStart(_baseUrl, acl.prefix);
+            }
         }
     }, {
         key: 'roleAccess',
