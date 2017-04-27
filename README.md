@@ -29,6 +29,9 @@ acl.setRules( __dirname + '/config/acl.yml' )
 // Set rules from an object
 acl.setRules( rulesObject )
 
+// Set URL prefix (e.g. for API versioning in routes)
+acl.setPrefix('/api/v1')
+
 // Set super role (default: admin)
 acl.superRole = 'root'
 

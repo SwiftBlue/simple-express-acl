@@ -12,12 +12,17 @@ class ACL {
         this.opts           = opts
         this.cwd            = process.cwd()
         this.rules          = {}
+        this.prefix         = false
         this.superRole      = opts.superRole || 'admin'
         this.rulesFile      = opts.rulesFile || path.join( this.cwd, 'acl.yml' )
         this.responseStatus = opts.responseStatus || 401
         this.response       = opts.response || {status: 'error', message: `Unauthorized access or insufficient permissions`}
 
         return acl
+    }
+
+    setPrefix(prefix) {
+        acl.prefix = prefix
     }
 
     check(req, res, next) {
@@ -54,10 +59,23 @@ class ACL {
     }
 
     makeUserRequest(req) {
+
+        if (acl.prefix) {
+
+        }
         return {
             roles:    req.user.roles,
             method:   _.toLower(req.method) || 'get',
-            resource: (_.toLower( _.trim(req.baseUrl, '/') )) || '/'
+            resource: acl.makeResource(req)
+        }
+    }
+
+    makeResource(req) {
+        if (!acl.prefix) {
+            return (_.toLower( _.trim(req.baseUrl, '/') )) || '/'
+        } else {
+            let _baseUrl = (_.toLower( _.trim(req.baseUrl, '/') )) || '/'
+            return _.trimStart(_baseUrl, acl.prefix)
         }
     }
 
