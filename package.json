@@ -1,6 +1,6 @@
 {
   "name": "simple-express-acl",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Dead simple Express ACL middleware that also works well with JSON Web Token's (JWT) and Passport's JWT strategy",
   "main": "dist/simple-express-acl.js",
   "author": "David Berube <david@swiftblue.com>",

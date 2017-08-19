@@ -64,7 +64,7 @@ var ACL = function () {
 
             var rules = acl.rules;
 
-            if (req && req.user && req.user.roles) {
+            if (req && (req.user && req.user.roles || req.session && req.session.roles)) {
                 var userRequest = acl.makeUserRequest(req);
                 var roleAccess = acl.roleAccess(userRequest.resource, userRequest.method);
                 var roles = acl.makeRoles(userRequest.roles);
@@ -104,7 +104,7 @@ var ACL = function () {
 
             if (acl.prefix) {}
             return {
-                roles: req.user.roles,
+                roles: req.user ? req.user.roles : req.session.roles,
                 method: _lodash2.default.toLower(req.method) || 'get',
                 resource: acl.makeResource(req)
             };

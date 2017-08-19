@@ -32,7 +32,7 @@ class ACL {
 
         const rules = acl.rules
 
-        if (req && req.user && req.user.roles) {
+        if (req && ((req.user && req.user.roles) || (req.session && req.session.roles))) {
             let userRequest = acl.makeUserRequest(req)
             let roleAccess  = acl.roleAccess(userRequest.resource, userRequest.method)
             let roles       = acl.makeRoles(userRequest.roles)
@@ -64,7 +64,7 @@ class ACL {
 
         }
         return {
-            roles:    req.user.roles,
+            roles:    req.user ? req.user.roles: req.session.roles,
             method:   _.toLower(req.method) || 'get',
             resource: acl.makeResource(req)
         }
