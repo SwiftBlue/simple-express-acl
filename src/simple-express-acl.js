@@ -53,7 +53,7 @@ class ACL {
             return res.status(401).send({
                 status: 'error',
                 type: `development`,
-                message: `No user roles found on req.user.roles`
+                message: `No user roles found on req.user.roles or req.session.roles`
             })
         }
     }
@@ -86,7 +86,9 @@ class ACL {
             let roleName       = rule.role
             access[ roleName ] = false
 
-            let route = _.find(rule.permissions, { resource })
+            let route = _.find(rule.permissions, function (perm) {
+                return resource.match(new RegExp(perm.resource !== '*'? perm.resource : '/*' , 'y'));
+            });
 
             if (!route) {
                 // Resource route not found in ACL configuration
