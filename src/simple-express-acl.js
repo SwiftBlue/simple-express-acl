@@ -87,7 +87,7 @@ class ACL {
             access[ roleName ] = false
 
             let route = _.find(rule.permissions, function (perm) {
-                return resource.match(new RegExp(perm.resource !== '*'? perm.resource : '/*' , 'y'));
+                return resource.match(new RegExp(perm.resource !== '*'? _.toLower(perm.resource) : '/*' , 'y'));
             });
 
             if (!route) {

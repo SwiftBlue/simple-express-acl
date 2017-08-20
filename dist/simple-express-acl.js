@@ -129,7 +129,7 @@ var ACL = function () {
                 access[roleName] = false;
 
                 var route = _lodash2.default.find(rule.permissions, function (perm) {
-                    return resource.match(new RegExp(perm.resource !== '*' ? perm.resource : '/*', 'y'));
+                    return resource.match(new RegExp(perm.resource !== '*' ? _lodash2.default.toLower(perm.resource) : '/*', 'y'));
                 });
 
                 if (!route) {
