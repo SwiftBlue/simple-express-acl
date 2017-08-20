@@ -171,9 +171,9 @@ var ACL = function () {
                 if (!roleRules || !roleRules.includeRoles) return;
 
                 if (_lodash2.default.isString(roleRules.includeRoles)) {
-                    includeRoles.push(_lodash2.default.toLower(roleRules.includeRoles));
+                    includeRoles.push(roleRules.includeRoles);
                 } else {
-                    includeRoles = _lodash2.default.map(roleRules.includeRoles, _lodash2.default.toLower);
+                    includeRoles = _lodash2.default.map(roleRules.includeRoles);
                 }
 
                 _lodash2.default.each(includeRoles, function (role) {

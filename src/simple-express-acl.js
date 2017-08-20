@@ -124,8 +124,8 @@ class ACL {
 
             if (!roleRules || !roleRules.includeRoles) return
 
-            if (_.isString(roleRules.includeRoles)) { includeRoles.push(_.toLower(roleRules.includeRoles)) }
-            else { includeRoles = _.map(roleRules.includeRoles, _.toLower) }
+            if (_.isString(roleRules.includeRoles)) { includeRoles.push(roleRules.includeRoles) }
+            else { includeRoles = _.map(roleRules.includeRoles) }
 
             _.each(includeRoles, (role) => { roles.push(role) })
         })
