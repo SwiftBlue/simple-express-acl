@@ -177,7 +177,7 @@ var ACL = function () {
                 }
 
                 _lodash2.default.each(includeRoles, function (role) {
-                    roles.push(role);
+                    roles = _lodash2.default.concat(roles, acl.makeRoles([role]));
                 });
             });
 

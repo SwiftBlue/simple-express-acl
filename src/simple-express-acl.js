@@ -127,7 +127,7 @@ class ACL {
             if (_.isString(roleRules.includeRoles)) { includeRoles.push(roleRules.includeRoles) }
             else { includeRoles = _.map(roleRules.includeRoles) }
 
-            _.each(includeRoles, (role) => { roles.push(role) })
+            _.each(includeRoles, (role) => { roles = _.concat(roles, acl.makeRoles([role])); })
         })
 
         return roles
