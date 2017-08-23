@@ -32,7 +32,7 @@ class ACL {
 
         const rules = acl.rules
 
-        if (req && req.user && req.user.roles) {
+        if (req && ((req.user && req.user.roles) || (req.session && req.session.roles))) {
             let userRequest = acl.makeUserRequest(req)
             let roleAccess  = acl.roleAccess(userRequest.resource, userRequest.method)
             let roles       = acl.makeRoles(userRequest.roles)
@@ -53,7 +53,7 @@ class ACL {
             return res.status(401).send({
                 status: 'error',
                 type: `development`,
-                message: `No user roles found on req.user.roles`
+                message: `No user roles found on req.user.roles or req.session.roles`
             })
         }
     }
@@ -64,7 +64,7 @@ class ACL {
 
         }
         return {
-            roles:    req.user.roles,
+            roles:    req.user ? req.user.roles: req.session.roles,
             method:   _.toLower(req.method) || 'get',
             resource: acl.makeResource(req)
         }
@@ -86,7 +86,9 @@ class ACL {
             let roleName       = rule.role
             access[ roleName ] = false
 
-            let route = _.find(rule.permissions, { resource })
+            let route = _.find(rule.permissions, function (perm) {
+                return resource.match(new RegExp(perm.resource !== '*'? _.toLower(perm.resource) : '/*' , 'y'));
+            });
 
             if (!route) {
                 // Resource route not found in ACL configuration
@@ -122,10 +124,10 @@ class ACL {
 
             if (!roleRules || !roleRules.includeRoles) return
 
-            if (_.isString(roleRules.includeRoles)) { includeRoles.push(_.toLower(roleRules.includeRoles)) }
-            else { includeRoles = _.map(roleRules.includeRoles, _.toLower) }
+            if (_.isString(roleRules.includeRoles)) { includeRoles.push(roleRules.includeRoles) }
+            else { includeRoles = _.map(roleRules.includeRoles) }
 
-            _.each(includeRoles, (role) => { roles.push(role) })
+            _.each(includeRoles, (role) => { roles = _.concat(roles, acl.makeRoles([role])); })
         })
 
         return roles

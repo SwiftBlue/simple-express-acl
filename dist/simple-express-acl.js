@@ -64,7 +64,7 @@ var ACL = function () {
 
             var rules = acl.rules;
 
-            if (req && req.user && req.user.roles) {
+            if (req && (req.user && req.user.roles || req.session && req.session.roles)) {
                 var userRequest = acl.makeUserRequest(req);
                 var roleAccess = acl.roleAccess(userRequest.resource, userRequest.method);
                 var roles = acl.makeRoles(userRequest.roles);
@@ -94,7 +94,7 @@ var ACL = function () {
                 return res.status(401).send({
                     status: 'error',
                     type: 'development',
-                    message: 'No user roles found on req.user.roles'
+                    message: 'No user roles found on req.user.roles or req.session.roles'
                 });
             }
         }
@@ -104,7 +104,7 @@ var ACL = function () {
 
             if (acl.prefix) {}
             return {
-                roles: req.user.roles,
+                roles: req.user ? req.user.roles : req.session.roles,
                 method: _lodash2.default.toLower(req.method) || 'get',
                 resource: acl.makeResource(req)
             };
@@ -128,7 +128,9 @@ var ACL = function () {
                 var roleName = rule.role;
                 access[roleName] = false;
 
-                var route = _lodash2.default.find(rule.permissions, { resource: resource });
+                var route = _lodash2.default.find(rule.permissions, function (perm) {
+                    return resource.match(new RegExp(perm.resource !== '*' ? _lodash2.default.toLower(perm.resource) : '/*', 'y'));
+                });
 
                 if (!route) {
                     // Resource route not found in ACL configuration
@@ -169,13 +171,13 @@ var ACL = function () {
                 if (!roleRules || !roleRules.includeRoles) return;
 
                 if (_lodash2.default.isString(roleRules.includeRoles)) {
-                    includeRoles.push(_lodash2.default.toLower(roleRules.includeRoles));
+                    includeRoles.push(roleRules.includeRoles);
                 } else {
-                    includeRoles = _lodash2.default.map(roleRules.includeRoles, _lodash2.default.toLower);
+                    includeRoles = _lodash2.default.map(roleRules.includeRoles);
                 }
 
                 _lodash2.default.each(includeRoles, function (role) {
-                    roles.push(role);
+                    roles = _lodash2.default.concat(roles, acl.makeRoles([role]));
                 });
             });
 
