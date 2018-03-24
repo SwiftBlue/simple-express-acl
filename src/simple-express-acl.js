@@ -71,12 +71,15 @@ class ACL {
     }
 
     makeResource(req) {
-        if (!acl.prefix) {
-            return (_.toLower( _.trim(req.baseUrl, '/') )) || '/'
-        } else {
-            let _baseUrl = (_.toLower( _.trim(req.baseUrl, '/') )) || '/'
-            return _.trimStart(_baseUrl, acl.prefix)
+        var _baseUrl = _lodash2.default.toLower(_lodash2.default.trim(req.path, '/')) || '/';
+
+        _baseUrl = acl.prefix ? _lodash2.default.trimStart(_baseUrl, acl.prefix) : _baseUrl;
+
+        if(_baseUrl.indexOf('/') !== -1) {
+            _baseUrl = _baseUrl.split('/')[0];
         }
+
+        return _baseUrl;
     }
 
     roleAccess(resource, method) {
